@@ -17,20 +17,24 @@ export class ProductsService {
   ) {}
 
   findAll() {
-    return this.productsRepository.find({ relations: ['category', 'images'] });
+    return this.productsRepository.find({
+      relations: { category: true, images: true },
+    });
   }
 
   async findOne(id: number) {
     const product = await this.productsRepository.findOne({
       where: { id },
-      relations: ['category', 'images', 'reviews'],
+      relations: { category: true, images: true, reviews: true },
     });
     if (!product) throw new NotFoundException(`Product ${id} not found`);
     return product;
   }
 
   async create(dto: CreateProductDto) {
-    const category = await this.categoriesRepository.findOneBy({ id: dto.categoryId });
+    const category = await this.categoriesRepository.findOneBy({
+      id: dto.categoryId,
+    });
     if (!category) throw new NotFoundException('Category not found');
 
     const product = this.productsRepository.create({ ...dto, category });
@@ -41,12 +45,22 @@ export class ProductsService {
     const product = await this.findOne(id);
 
     if (dto.categoryId) {
-      const category = await this.categoriesRepository.findOneBy({ id: dto.categoryId });
+      const category = await this.categoriesRepository.findOneBy({
+        id: dto.categoryId,
+      });
       if (!category) throw new NotFoundException('Category not found');
       product.category = category;
     }
 
-    Object.assign(product, dto);
+    Object.assign(product, {
+      name: dto.name ?? product.name,
+      slug: dto.slug ?? product.slug,
+      description: dto.description ?? product.description,
+      price: dto.price ?? product.price,
+      stockQuantity: dto.stockQuantity ?? product.stockQuantity,
+      sku: dto.sku ?? product.sku,
+      isActive: dto.isActive ?? product.isActive,
+    });
     return this.productsRepository.save(product);
   }
 

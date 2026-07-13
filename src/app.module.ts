@@ -5,7 +5,11 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CategoriesModule } from './categories/categories.module';
 import { AuthModule } from './auth/auth.module';
-import {ProductsModule} from "./products/products.module";
+import { ProductsModule } from './products/products.module';
+import { ReviewsModule } from './reviews/reviews.module';
+import { OrdersModule } from './orders/orders.module';
+import { ProductImagesModule } from './product-images/product-images.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -22,10 +26,12 @@ import {ProductsModule} from "./products/products.module";
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: process.env.NODE_ENV !== 'production',
     }),
-    CategoriesModule,
     AuthModule,
+    CategoriesModule,
     ProductsModule,
-
+    ProductImagesModule,
+    ReviewsModule,
+    OrdersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

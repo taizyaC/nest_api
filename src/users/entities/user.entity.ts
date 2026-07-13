@@ -1,6 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Review } from '../../reviews/entities/review.entity';
 import { Order } from '../../orders/entities/order.entity';
+import { UserRole } from '../../common/enums/user-role.enum';
 
 @Entity('users')
 export class User {
@@ -11,16 +19,23 @@ export class User {
   email!: string;
 
   @Column({ name: 'password_hash', length: 255 })
-  passwordHash!: string;
+  password_hash!: string;
 
   @Column({ name: 'first_name', length: 100 })
-  firstName!: string;
+  first_name!: string;
 
   @Column({ name: 'last_name', length: 100 })
-  lastName!: string;
+  last_name!: string;
 
   @Column({ name: 'is_active', default: true })
-  isActive!: boolean;
+  is_active!: boolean;
+
+  @Column({
+    type: 'enum',
+    enum: UserRole,
+    default: UserRole.Customer,
+  })
+  role!: UserRole;
 
   @OneToMany(() => Review, (review) => review.user)
   reviews!: Review[];
@@ -29,8 +44,8 @@ export class User {
   orders!: Order[];
 
   @CreateDateColumn({ name: 'created_at' })
-  createdAt!: Date;
+  created_at!: Date;
 
   @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt!: Date;
+  updated_at!: Date;
 }
